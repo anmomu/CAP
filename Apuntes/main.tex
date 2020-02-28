@@ -1,0 +1,390 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{biblatex}
+
+% Verbatim con fondo gris
+\usepackage{fancyvrb,newverbs,xcolor}
+\usepackage{lipsum}% just for this example
+
+\definecolor{cverbbg}{gray}{0.93}
+
+\newenvironment{cverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{\BUseVerbatim{cverb}}%
+  \endflushleft
+}
+\newenvironment{lcverbatim}
+ {\SaveVerbatim{cverb}}
+ {\endSaveVerbatim
+  \flushleft\fboxrule=0pt\fboxsep=.5em
+  \colorbox{cverbbg}{%
+    \makebox[\dimexpr\linewidth-2\fboxsep][l]{\BUseVerbatim{cverb}}%
+  }
+  \endflushleft
+}
+
+\newcommand{\ctexttt}[1]{\colorbox{cverbbg}{\texttt{#1}}}
+\newverbcommand{\cverb}
+  {\setbox\verbbox\hbox\bgroup}
+  {\egroup\colorbox{cverbbg}{\box\verbbox}}
+
+% END: Verbatim con fondo gris
+
+
+\addbibresource{mibibliografia.bib}
+
+\title{Actividad 01 - Dockers}
+\author{Antonio Morán Muñoz}
+\date{Febrero 2020}
+\setlength{\parindent}{0pt}
+\usepackage[left=2.54cm,right=2.54cm,top=2.54cm,bottom=2.54cm]{geometry}
+\author{Antonio Morán Muñoz}
+\title{Actividad 01 - Dockers}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ACTIVIDAD 01 - DOCKERS}
+\rhead{\thepage}
+\cfoot{Computación de Altas Prestaciones}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+\begin{document}
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+	\includegraphics[width=0.35\textwidth]{Images/castilla.png}\par\vspace{1cm}
+	{\scshape\LARGE Universidad de Castilla-La Mancha \par}
+	\vspace{1cm}
+	{\scshape\Large Planificación y Gestión de Infraestructuras TIC\par}
+	\vspace{1.5cm}
+	{\huge\bfseries Actividad 01 - Dockers\par}
+	\vspace{2cm}
+	{\Large\itshape Antonio Morán Muñoz\par}
+
+	\vfill
+
+% Bottom of the page
+	{CURSO ACADÉMICO 2019/2020}
+	\vfill
+	{\large \today\par}
+\end{titlepage}
+
+\section{Ejercicio 01}
+Una vez conocido el ecosistema de Docker, se propone un ejercicio para poner en práctica todo
+este conocimiento. Vamos a crear un servicio de almacenamiento tipo dropbox en un contenedor.
+En el anexo A puedes encontrar información sobre los comandos de Docker necesarios para
+llevar a cabo este ejercicio.
+El ejercicio se compone de los siguientes pasos:
+\begin{itemize}
+\item Descarga la imagen owncloud de Docker Hub. Esta imagen permite crear almacenamiento
+en la nube al estilo DropBox en nuestra máquina. El comando utilizado ha sido el siguiente:
+
+\begin{lcverbatim}
+docker pull owncloud
+\end{lcverbatim}
+
+
+\item Lista las imágenes actuales de la máquina host e indica el tamaño de la imagen owncloud. Como se puede ver en la Figura \ref{fig:dockerimg}, el tamaño de la imagen owncloud es de 618MB. El comando utilizado ha sido el siguiente:
+
+\begin{lcverbatim}
+docker images
+\end{lcverbatim}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/dockerimg.png}
+    \caption{Listado de imágenes disponibles}
+    \label{fig:dockerimg}
+\end{figure}
+
+\item Crea y ejecuta un contenedor en segundo plano con la imagen de owncloud. Haz que el
+contenedor sea accesible desde la URL http://localhost de tu máquina. En la Figura \ref{fig:runimg}, se puede ver el resultado de la creación y ejecución del contenedor con la imagen de owncloud. El comando utilizado ha sido el siguiente:
+
+\begin{lcverbatim}
+docker run -d -p 80:80 327bd201c5fb
+\end{lcverbatim}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/runimg.png}
+    \caption{Creación y ejecución del contenedor con la imagen de owncloud. Se puede ver cómo se devuelve el ID del contenedor}
+    \label{fig:runimg}
+\end{figure}
+
+\item Lista la información de los contenedores actuales y anota el identificador del contenedor que
+acabas de crear. En la Figura \ref{fig:listcontainers} se puede ver el listado de todos los contenedores en ejecución, ya que no hemos indicado con ninguna opción que se muestren todos. El comando utilizado ha sido el siguiente:
+
+\begin{lcverbatim}
+docker ps
+\end{lcverbatim}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/listcontainers.png}
+    \caption{Listado de los contenedores activos}
+    \label{fig:listcontainers}
+\end{figure}
+
+La ID del contenedor abreviada es 5527021ba434, y la completa 
+
+5527021ba434e44084017a502367f1b617b5dbbef3bf83dfb0038af16fbda314
+
+\item Obtén información sobre las variables de entorno del contenedor que acabas de crear. ¿Cuántas variables de entorno tiene definidas? ¿Podrías explicar para qué sirve cada una de ellas? La Figura \ref{fig:envvar} muestra las variables de entorno que se han configurado para el contenedor. Dichas variables se encuentran bajo el campo \verb|config| de la salida en formato JSON del comando. El comando utilizado ha sido el siguiente:
+
+\begin{lcverbatim}
+docker inspect 5527021ba434
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/envvar.png}
+    \caption{Lista de variables de entorno del contenedor}
+    \label{fig:envvar}
+\end{figure}
+
+A continuación se explicará la utilidad de cada una de las variables de entorno:
+
+\begin{lcverbatim}
+- PATH: contiene las rutas de las herramientas usadas por el 
+sistema operativo del contenedor
+- PHPIZE_DEPS: contiene las dependencias de PHP
+- PHP_INI_DIR: contiene la ruta de PHP
+- APACHE_CONFDIR: contiene la ruta del directorio de configuración 
+de Apache
+- APACHE_ENVVARS: contiene la ruta del fichero con las variables de 
+entorno de Apache
+- PHP_EXTRA_BUILD_DEPS: contiene más dependencias de PHP
+- PHP_EXTRA_CONFIGURE_ARGS: contiene argumentos de configuración de 
+PHP
+- PHP_CFLAGS
+- PHP_CPPFLAGS
+- PHP_LDFLAGS
+- GPG_KEYS
+- PHP_VERSION: contiene la versión de PHP
+- PHP_URL
+- PHP_ASC_URL
+- PHP_SHA256: contiene el valor hash de PHP
+- PHP_MD5
+- OWNCLOUD_VERSION: contiene la versión de owncloud que se está 
+ejecutando
+- OWNCLOUD_SHA256: contiene el valor hash de owncloud
+\end{lcverbatim}
+
+\item Elimina la imagen del contenedor e indica los pasos que has realizado. Hazlo sin hacer uso
+de la opción de forzado (-f). En primer lugar tenemos que parar la ejecución del contenedor. Después, puesto que la imagen no se puede eliminar si hay un contenedor creado con ella, es necesario borrar el contenedor. Por último, ya se puede borrar la imagen. La secuencia de comandos utilizada ha sido la siguiente:
+
+\begin{lcverbatim}
+docker stop 5527021ba434
+docker rm 5527021ba434
+docker rmi 327bd201c5fb
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/rmimg.png}
+    \caption{Eliminación de la imagen owncloud}
+    \label{fig:rmimg}
+\end{figure}
+
+\end{itemize}
+
+%
+%
+%
+%
+%
+%
+%
+
+\section{Ejercicio 02}
+En este ejercicio se va a utilizar Docker Compose para el despliegue mediante contenedores
+de una página web sencilla que cuenta las visitas que ha recibido. La aplicación está compuesta
+por dos contenedores: web y redis. El primer contenedor, cuya imagen se crea localmente, utiliza
+el framework Flask [3] de python para exponer contenido web en el puerto 5000. El segundo
+contenedor utiliza el servicio de bases de datos de Redis [4] para guardar un contador que mostrará
+el primer contenedor.
+En el material que se proporciona con esta actividad, puedes observar dos carpetas corres-
+pondientes a las dos partes de este ejercicio. Para cada una de ellas, responde a las siguientes
+preguntas:
+
+\subsection{Parte 01}
+NOTA: Las instrucciones se ejecutan desde los correspondientes directorios, por lo que no es necesario usar la opción -f.
+
+\begin{enumerate}
+\item Pon en ejecución la aplicación en primer plano. Explica qué es lo que ocurre durante su
+puesta en marcha. En la Figura \ref{fig:errcomposeup}, se observa cómo al ejecutar por primera vez la herramienta, la versión indicada en el fichero \verb|docker-compose.yml| no es compatible por lo que se tiene que cambiar por la 2. Tras esto, la Figura \ref{fig:1ej02ap01} muestra cómo la aplicación permanece a la escucha, inhabilitando la terminal. El comando utilizado es el siguiente:
+
+\begin{lcverbatim}
+docker-compose up
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/errorcomposeup.png}
+    \caption{Error al ejecutar por primera vez la herramienta docker-compose dentro del directorio de la parte 01 del ejercicio}
+    \label{fig:errcomposeup}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/1ej02ap01.png}
+    \caption{Lanzamos la aplicación}
+    \label{fig:1ej02ap01}
+\end{figure}
+
+\item Lista los contenedores en ejecución y anota los nombres de los contenedores. La Figura \ref{fig:1ej02ap02} muestra los dos contenedores en ejecución tras lanzar la aplicación. El comando utilizado es el siguiente:
+
+\begin{lcverbatim}
+docker ps
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/1ej02ap02.png}
+    \caption{Contenedores activos tras la ejecución de la aplicación}
+    \label{fig:1ej02ap02}
+\end{figure}
+
+\newpage
+\item Accede a http://localhost:5000 y recarga varias veces la página. ¿Qué es lo que ocurre
+en la terminal donde se puso en ejecución la aplicación? Lo que ocurre es que se lanzan tantas peticiones GET como veces refresquemos la página. La Figura \ref{fig:1ej02ap03} muestra una captura de la terminal.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/1ej02ap03.png}
+    \caption{Terminal donde se ejecuta la aplicación}
+    \label{fig:1ej02ap03}
+\end{figure}
+
+\item Modifica el texto HTML que devuelve el método hello() del fichero app.py. ¿Qué ocurre al
+recargar la página web en el navegador? Nada ¿Por qué? Porque no hemos relanzado la aplicación con los cambios
+
+
+\item Modifica en el fichero docker-compose.yml el nombre del servicio redis y relanza la aplica-
+ción. ¿Qué ocurre al recargar la página web en el navegador? Que no se muestran los cambios en la página web (ver Figura \ref{fig:1ej02ap05}) ¿Por qué? Porque los contenedores en ejecución no se reconstruyen, sino que se ejecutan como se crearon en el principio, con la versión sin modificar del código html. Si ejecutamos el comando \verb|docker-compose build web|, se aplicarían los cambios. La conexión redis falla porque el nombre que le hemos dado al servicio difiere del nombre indicado en \verb|app.py|
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Images/1ej02ap05.png}
+    \caption{Página web con los cambios}
+    \label{fig:1ej02ap05}
+\end{figure}
+
+\item Detén la ejecución de la aplicación sin hacer uso de Ctrl+C. Detalla el proceso seguido. Nota:
+utiliza comandos de Docker en una parte y comandos de Docker Compose en la otra. En la Figura \ref{fig:1ej02ap06} se muestra la parada de la aplicación en la terminal. En la primera parte hemos utilizado los comandos de Docker. Para ello, tenemos que parar los contenedores que componen la aplicación y después borrarlos. Además, borraremos las imágenes para rehacer los ejercicios con la parte 2:
+
+\begin{lcverbatim}
+docker stop cb91de9dfc09 15a70901428a
+docker rm cb91de9dfc09 15a70901428a
+docker rmi e22ba1744d17 028b8a48e54f a5d195bb2a63 44d36d2c2374
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/1ej02ap06.png}
+    \caption{Parada de la aplicación}
+    \label{fig:1ej02ap06}
+\end{figure}
+
+\end{enumerate}{}
+
+%
+%
+%
+%
+
+\subsection{Parte 02}
+
+NOTA: Las instrucciones se ejecutan desde los correspondientes directorios, por lo que no es necesario usar la opción -f.
+
+\begin{enumerate}
+\item Pon en ejecución la aplicación en primer plano. Explica qué es lo que ocurre durante su
+puesta en marcha. También ocurre el problema de la versión, por lo que hay que corregirlo antes. La Figura \ref{fig:2ej02ap01} muestra cómo, al igual que en la parte 01, la aplicación se crea, despliega y permanece a la escucha, inhabilitando la terminal. El comando utilizado es el siguiente:
+
+\begin{lcverbatim}
+docker-compose up
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/2ej02ap01.png}
+    \caption{Lanzamos la segunda aplicación}
+    \label{fig:2ej02ap01}
+\end{figure}
+
+\item Lista los contenedores en ejecución y anota los nombres de los contenedores. La Figura \ref{fig:2ej02ap02} muestra los dos contenedores en ejecución tras lanzar la aplicación. El comando utilizado es el siguiente:
+
+\begin{lcverbatim}
+docker ps
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/2ej02ap02.png}
+    \caption{Contenedores activos tras la ejecución de la segunda aplicación}
+    \label{fig:2ej02ap02}
+\end{figure}
+
+\item Accede a http://localhost:5000 y recarga varias veces la página. ¿Qué es lo que ocurre
+en la terminal donde se puso en ejecución la aplicación? Al igual que en el apartado anterior, lo que ocurre es que se lanzan tantas peticiones GET como veces refresquemos la página. La Figura \ref{fig:2ej02ap03} muestra una captura de la terminal.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/2ej02ap03.png}
+    \caption{Terminal donde se ejecuta la aplicación}
+    \label{fig:2ej02ap03}
+\end{figure}
+
+\item Modifica el texto HTML que devuelve el método hello() del fichero app.py. ¿Qué ocurre al
+recargar la página web en el navegador? Que se reflejan los cambios (véase Figura \ref{fig:2ej02ap04}) ¿Por qué? Porque en el fichero \verb|docker-compose.yml| está indicada la opción \verb|volumes|, en la que se indica que se vuelva a cargar el contenido del directorio actual en el directorio \verb|/code| del servicio web cuando se ejecute la instrucción \verb|docker-compose up|. Sería como volver a reconstruir el servicio web en la primera parte.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.5\textwidth]{Images/2ej02ap04.png}
+    \caption{Modificación aplicada}
+    \label{fig:2ej02ap04}
+\end{figure}
+
+\newpage
+\item Modifica en el fichero docker-compose.yml el nombre del servicio redis y relanza la aplicación. ¿Qué ocurre al recargar la página web en el navegador? Que la página web que hemos levantado no se conecta con el servidor redis (ver Figura \ref{fig:2ej02ap05}) ¿Por qué? Porque el nombre del servicio radis de \verb|docker-compose.yml| no coincide con el nombre que le dimos en \verb|app.py|
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.8\textwidth]{Images/2ej02ap05.png}
+    \caption{El servidor redis no se encuentra porque le hemos cambiado el nombre}
+    \label{fig:2ej02ap05}
+\end{figure}
+
+\item Detén la ejecución de la aplicación sin hacer uso de Ctrl+C. Detalla el proceso seguido. Nota:
+utiliza comandos de Docker en una parte y comandos de Docker Compose en la otra. En la Figura \ref{fig:2ej02ap06} se muestra la parada de la aplicación en la terminal. En esta segunda parte se utilizan los comandos de Docker Compose. En realidad, con un solo comando basta, por lo que se ven claramente las ventajas de utilizar este método:
+
+\begin{lcverbatim}
+docker-compose down
+\end{lcverbatim}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Images/2ej02ap06.png}
+    \caption{Parada de la aplicación}
+    \label{fig:2ej02ap06}
+\end{figure}
+
+\end{enumerate}{}
+
+
+
+\newpage
+\printbibliography
+
+\end{document}
